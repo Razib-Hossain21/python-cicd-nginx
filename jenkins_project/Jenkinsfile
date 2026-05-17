@@ -11,7 +11,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
 		echo 'Starting Docker Image Buiding Process..'
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG -f jenkins_project/Dockerfile jenkins_project.'
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG -f jenkins_project/Dockerfile jenkins_project'
 		echo 'Docker Image build Success..'
             }
         }

@@ -10,12 +10,15 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+		echo 'Starting Docker Image Buiding Process..'
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG -f jenkins_project/Dockerfile jenkins_project.'
+		echo 'Docker Image build Success..'
             }
         }
 
         stage('Deploying Container') {
             steps {
+		echo 'Starting Container Deploying Process...'
                 sh '''
                     docker stop pyapp || true
                     docker rm pyapp || true
@@ -24,6 +27,7 @@ pipeline {
                     -v jenkins_home:/var/jenkins_home \
                     $IMAGE_NAME:$IMAGE_TAG
                 '''
+		echo 'Container deployed successfully.'
             }
         }
     }

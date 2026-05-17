@@ -39,7 +39,7 @@ pipeline {
             )
 
             slackSend(
-                channel: '#C0B47RAFKUJ',
+                channel: 'C0B47RAFKUJ',
                 message: "✅ SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] completed successfully!\n${env.BUILD_URL}",
                 color: '#36a64f'
             )
@@ -54,7 +54,7 @@ pipeline {
             )
 
             slackSend(
-                channel: '#C0B47RAFKUJ',
+                channel: 'C0B47RAFKUJ',
                 message: "❌ FAILED: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] failed due to configuration error!\n${env.BUILD_URL}",
                 color: '#ff0000'
             )

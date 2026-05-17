@@ -2,52 +2,62 @@ pipeline {
     agent any
 
     environment {
-	IMAGE_NAME = "python-website"
-	IMAGE_TAG = "latest"
- }
-    stages {
-	 stage ('Build Docker Image'){
-	  steps {
-		sh 'docker build -t $IMAGE_NAME:IMAGE_TAG .'
-   }
-  }
-	stage ('Deploying Container'){
-	  steps {
-		sh '''
-		docker stop pyapp || true
-		docker rm pyapp || true
+        IMAGE_NAME = "python-website"
+        IMAGE_TAG  = "latest"
+    }
 
-		docker run -d --name pyapp -p 5001:5001 \
-		-v jenkins_home:/var/jenkins_home \
-		$IMAGE_NAME:IMAGE_TAG
-		'''
-   }
-  }
- }
-	post {
-	   success {
-		emailext ( 
-		    subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-		    body: "Hello Mr. Razib, Congratulations..! Your Pipeline Job Successfully BUILD and RUN. You may check if you want.",
-		    to: "unionins97@gmail.com"
-   )
-	  	slackSend (
-		    channel: '#C0B47RAFKUJ',
-		    message: '✅ SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' completed successfully!\n${env.BUILD_URL}',
-		    color: '#36a64f'
-   )
-  }
-	   failure {
-		emailext (
-		    subject: "FAILED: ${env.JOB_NAME} #{env.BUILD_NUMBER}",
-		    body: "Hello Mr. Razib, Sorry..! Your Pipeline Job build failed. Please check Immediate and fix urgently..!",
-		    to: "unionins97@gmail.com"
-	)
-		slackSend (
-		    channel: '#C0B47RAFKUJ',
-                    message 'FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' Incompleted due to configure error!\n${env.BUILD_URL}',
-                    color: '#ff0000'
-	)
-  }
- }
+    stages {
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+            }
+        }
+
+        stage('Deploying Container') {
+            steps {
+                sh '''
+                    docker stop pyapp || true
+                    docker rm pyapp || true
+
+                    docker run -d --name pyapp -p 5001:5001 \
+                    -v jenkins_home:/var/jenkins_home \
+                    $IMAGE_NAME:$IMAGE_TAG
+                '''
+            }
+        }
+    }
+
+    post {
+
+        success {
+
+            emailext(
+                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Hello Mr. Razib, Congratulations..! Your Pipeline Job Successfully BUILD and RUN.",
+                to: "unionins97@gmail.com"
+            )
+
+            slackSend(
+                channel: '#C0B47RAFKUJ',
+                message: "✅ SUCCESS: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] completed successfully!\n${env.BUILD_URL}",
+                color: '#36a64f'
+            )
+        }
+
+        failure {
+
+            emailext(
+                subject: "FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "Hello Mr. Razib, Sorry..! Your Pipeline Job build failed. Please check immediately and fix urgently..!",
+                to: "unionins97@gmail.com"
+            )
+
+            slackSend(
+                channel: '#C0B47RAFKUJ',
+                message: "❌ FAILED: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] failed due to configuration error!\n${env.BUILD_URL}",
+                color: '#ff0000'
+            )
+        }
+    }
 }
